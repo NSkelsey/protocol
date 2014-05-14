@@ -10,8 +10,10 @@ All bitcoin addresses that are treated as usernames are interpreted as follows:
 
 
 ###Examples
+```
 1nskeLseycHqhW8QR9jya1TaZeXYwyy7s --> nskelseyc yy7s
 1askuckTe53qxHdPqXEvdu8WdCXWn6Cmb --> askuckte5 6Cmb
+```
 
 Topics
 ----
@@ -29,11 +31,15 @@ To transform it into a topic the following operations will occur:
 
 ###Examples
 ####Valid
+```
 1hedgefundsXdrainXsocietyXXXYUebE --> Hedge Funds Drain Society
 1thisXisXaXpubLicXLedgerXXXbMieDH --> This Is A Public Ledger
 1protestsXinX2o14XXXXXXXXXXh6JThb --> Protests In 2014
+```
 ####Invalid
+```
 1ProTestSXiNX2o14XXXXXXXXXXXZVQQq6
+```
 
 Bulletins
 ----
@@ -43,20 +49,15 @@ For a bitcoin transaction to be interpreted as a Bulletin it must:
 [ 0x2D2D20 app-version 0x202D2D20 [ epochint lat,lon ] ]
 
 ###Example
+```
 -- ahimsa-0.0.1 -- 2131232 (123.3123, 54.3232)
-
+```
 - The first output in the tx must have this format: 
+```
 val [ 0x00000000 num_topics len_data data ]
-
+```
 The rest follow:
-
+```
 [val [ topic_script ]]....
 [val [ data_script ]]....
-
-- For a bitcoin output to be interpreted as a data it must
- burn the current dust minimum by encoding data as a typical tx
-
-- For a bitcoin ouput to be a Topic it must contain a valid topic
-address 
-
-- For a bitcoin output to be a 
+```
