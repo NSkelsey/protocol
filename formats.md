@@ -41,23 +41,31 @@ To transform it into a topic the following operations will occur:
 1ProTestSXiNX2o14XXXXXXXXXXXZVQQq6
 ```
 
-Bulletins
+Data
 ----
+We have defined a format that describes how to store data in a transaction
 
-For a bitcoin transaction to be interpreted as a Bulletin it must:
-- Contain an OP_RETURN that has the following format:
-[ 0x2D2D20 app-version 0x202D2D20 [ epochint lat,lon ] ]
 
-###Example
-```
--- ahimsa-0.0.1 -- 2131232 (123.3123, 54.3232)
-```
-- The first output in the tx must have this format: 
-```
-val [ 0x00000000 num_topics len_data data ]
-```
-The rest follow:
-```
-[val [ topic_script ]]....
-[val [ data_script ]]....
-```
+To store data a transaction must contain an OP_RETURN where all subsquent txouts are used for storage.
+
+Everything above that OP_RETURN is ignored. (So change can be generated there)
+
+NOTE var:int means variable requires int bytes of space
+
+The format for the message header is:
+| Value | Scriptlen | Script |
+|-------|:---------:|--------|
+| 0     |   len     | OP_RETURN [0xdeadbeef data_type:8 verison:2 type_headers:?] |
+
+
+Currently supported data_types are:
+| Data Type | Version | Type Headers |
+|-----------|:-------:|--------------|
+| bulletin  |    1    | msglen:4 numTopics:1 numUsers:1 userAgent:10 |
+
+For encoding a v1 bulletin the format is:
+| Value | Scriptlen | Script |
+|-------|-----------|--------|
+| 546   |     25    | OP_DUP OP_HASH160 data:20 OP_EQUALVERIFY OP_CHECKSIG |
+
+Where the order is: topics; users; msg
