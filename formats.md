@@ -1,12 +1,12 @@
 Data
 ----
-We have defined a format that describes how to store objects in a bitcoin transaction. To store data a transaction must contain an OP_RETURN where all subsequent txouts are used for storage. Everything above that OP_RETURN is ignored. (So change outputs can be specified above)
+We have defined a format that describes how to store messages in bitcoin transactions. The first output of a message must have a header in its data field.
 
-An object is encoded as a block of txouts. The header gives enough information for the object to be decoded from the following txouts. Since data encoding formats are likely to change all datatypes are versioned with corresponding headers that provide extra information about that object. Allowing us to reconstruct it elsewhere.
+The rest of the message is encoded as a block of txouts. The header gives enough information for the object to be decoded from the following txouts. Since data encoding formats are likely to change all datatypes are versioned with corresponding headers that provide extra information about that object. Allowing us to reconstruct it elsewhere.
 
 NOTE var:int means variable var requires int bytes of space.
 
-The format for the message header is:
+The format for the message header is unclear.....:
 
 
 | Value | Scriptlen | Script |
@@ -49,17 +49,25 @@ Usernames
 
 All bitcoin addresses that are treated as usernames are interpreted as follows:
 
-- Everything but the first 8 characters are removed
-- The last 4 characters of the address are stored as a fingerprint
+- Everything but the characters between [1:9] are discarded
+- The last 4 characters of the address can be used as a fingerprint
  * Optionally that fingerprint can be converted into an rgb value
+- A valid address must contain a capital letter at postion [0]
+ * It must not be an L or an X (this keeps usernames and topics mutually exclusive)
 
 
 ###Examples
+####Valid
 ```
-1nskeLseycHqhW8QR9jya1TaZeXYwyy7s --> nskelseyc yy7s
-1askuckTe53qxHdPqXEvdu8WdCXWn6Cmb --> askuckte5 6Cmb
+1NSkeLseycHqhW8QR9jya1TaZeXYwyy7s --> NSkelseyc yy7s
+1AskuckTe53qxHdPqXEvdu8WdCXWn6Cmb --> Askuckte5 6Cmb
 ```
-
+####Invalid
+```
+1nskeLseycHqhW8QR9jya1TaZeXYw5jdt
+16Frogsw3CHVqiBfmC3vCLrXPob6wLQSP4
+1LaRRy1dhB6rneeZazy9hQg9iUpo961Mt9
+```
 Topics
 ----
 
