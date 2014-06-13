@@ -1,10 +1,8 @@
 Data
 ----
-We have defined a format that describes how to store data in a bitcoin transaction
+We have defined a format that describes how to store objects in a bitcoin transaction. To store data a transaction must contain an OP_RETURN where all subsequent txouts are used for storage. Everything above that OP_RETURN is ignored. (So change outputs can be specified above)
 
-To store data a transaction must contain an OP_RETURN where all subsequent txouts are used for storage.
-
-Everything above that OP_RETURN is ignored. (So change outputs can be specified above)
+An object is encoded as a block of txouts. The header gives enough information for the object to be decoded from the following txouts. Since data encoding formats are likely to change all datatypes are versioned with corresponding headers that provide extra information about that object. Allowing us to reconstruct it elsewhere.
 
 NOTE var:int means variable var requires int bytes of space.
 
@@ -53,7 +51,7 @@ All bitcoin addresses that are treated as usernames are interpreted as follows:
 
 - Everything but the first 8 characters are removed
 - The last 4 characters of the address are stored as a fingerprint
- * Optioinally that fingerprint can be converted into an rgb value
+ * Optionally that fingerprint can be converted into an rgb value
 
 
 ###Examples
