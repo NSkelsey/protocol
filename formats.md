@@ -53,7 +53,7 @@ All bitcoin addresses that are treated as usernames are interpreted as follows:
 
 - Everything but the first 8 characters are removed
 - The last 4 characters of the address are stored as a fingerprint
- * Optioinally that fingerprint can be converted into an rgb value
+ * Optionally that fingerprint can be converted into an rgb value
 
 
 ###Examples
