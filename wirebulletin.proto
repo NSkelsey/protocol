@@ -1,0 +1,6 @@
+// The protocol buffer format for serialized bulletins 
+message WireBulletin {
+    required uint32 version = 1;
+    optional string topic = 2;
+    optional string message = 3;
+}
