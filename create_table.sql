@@ -1,28 +1,18 @@
 CREATE TABLE blocks (
-	hash VARCHAR NOT NULL, 
-	prevhash VARCHAR, 
+	hash TEXT NOT NULL, 
+	prevhash TEXT, 
+    height INT, -- The number of blocks between this one and the genesis block.
 	PRIMARY KEY (hash)
+    FOREIGN KEY(prevhash) REFERENCES blocks(hash)
 );
-CREATE TABLE addresses (
-	addr VARCHAR NOT NULL, 
-	PRIMARY KEY (addr)
-);
-CREATE TABLE transactions (
-	txid VARCHAR NOT NULL, 
-	block VARCHAR, 
-	raw BLOB, 
-	PRIMARY KEY (txid)
-);
+
 CREATE TABLE bulletins (
-	txid VARCHAR NOT NULL, 
-	data BLOB, 
+    author TEXT NOT NULL, -- From the address of the first OutPoint used.
+	txid TEXT NOT NULL, 
+    topic TEXT,   -- UTF-8
+    message TEXT, -- UTF-8
+    block TEXT, 
 	PRIMARY KEY (txid), 
-	FOREIGN KEY(txid) REFERENCES transactions (txid)
+    FOREIGN KEY(block) REFERENCES blocks (hash)
 );
-CREATE TABLE "references" (
-	txid VARCHAR NOT NULL, 
-	addr VARCHAR NOT NULL, 
-	PRIMARY KEY (txid, addr), 
-	FOREIGN KEY(txid) REFERENCES bulletins (txid), 
-	FOREIGN KEY(addr) REFERENCES addresses (addr)
-);
+
