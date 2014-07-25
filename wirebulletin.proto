@@ -1,6 +1,6 @@
 // The protocol buffer format for serialized bulletins 
 
-option java_outer_classname = "BulletinProtos";
+option java_outer_classname = "WireBulletinProtos";
 
 message WireBulletin {
     required uint32 version = 1;
