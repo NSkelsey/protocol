@@ -14,7 +14,7 @@ CREATE TABLE bulletins (
     message TEXT,           -- UTF-8
     block   TEXT, 
     -- Table constraints
-    PRIMARY KEY (txid), 
+    PRIMARY KEY(txid), 
     FOREIGN KEY(block) REFERENCES blocks (hash)
 );
 
