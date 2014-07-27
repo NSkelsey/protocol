@@ -1,5 +1,7 @@
 // The protocol buffer format for serialized bulletins 
 
+package protocol;
+
 option java_outer_classname = "WireBulletinProtos";
 
 message WireBulletin {
