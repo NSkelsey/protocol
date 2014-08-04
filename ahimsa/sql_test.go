@@ -1,10 +1,13 @@
-package protocol_test
+package ahimsa_test
 
-import "testing"
-import "github.com/NSkelsey/protocol"
+import (
+	"testing"
+
+	"github.com/NSkelsey/protocol/ahimsa"
+)
 
 func TestFullPath(t *testing.T) {
-	cmd, err := protocol.GetCreateSql()
+	cmd, err := ahimsa.GetCreateSql()
 	if err != nil {
 		t.Fatal(err)
 	}

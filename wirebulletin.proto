@@ -1,6 +1,6 @@
 // The protocol buffer format for serialized bulletins 
 
-package protocol;
+package ahimsa;
 
 option java_outer_classname = "WireBulletinProtos";
 
