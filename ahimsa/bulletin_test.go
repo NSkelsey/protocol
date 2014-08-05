@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/NSkelsey/protocol/ahimsa"
+
 	"code.google.com/p/goprotobuf/proto"
 )
 
@@ -11,13 +13,13 @@ func TestBulletinCreate(t *testing.T) {
 	topic := "King Arthur Arrives in Camelot"
 	msg := "What knight live in that castle over there?"
 
-	bltn, err := ahimsa.NewBulletin("nick", topic, msg)
+	bltn, err := ahimsa.NewBulletinFromStr("nick", topic, msg)
 	if err != nil {
 		t.Errorf("New failed with: %v", err)
 		return
 	}
 
-	if bltn.GetMessage() != msg {
+	if bltn.Message != msg {
 		t.Errorf("Msgs do not match: %v", err)
 		return
 	}
