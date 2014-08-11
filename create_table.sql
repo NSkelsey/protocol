@@ -2,6 +2,7 @@ CREATE TABLE blocks (
     hash        TEXT NOT NULL, 
     prevhash    TEXT, 
     height      INT,        -- The number of blocks between this one and the genesis block.
+    timestamp   INT,        -- The timestamp stored as an epoch time
     -- Table constraints
     PRIMARY KEY(hash)
     FOREIGN KEY(prevhash) REFERENCES blocks(hash)
