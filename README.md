@@ -11,8 +11,6 @@ effeciency!?
 As of version 0.0.0, the database consists of two tables. Blocks and bulletins are
 the only objects whose existence we track.
 
-
-
 Prior Work
 ======
 
