@@ -170,24 +170,28 @@ func (bltn *Bulletin) TxOuts(toBurn int64, net *btcnet.Params) ([]*btcwire.TxOut
 	return txouts, nil
 }
 
-func GetAuthor(authorTx *btcwire.MsgTx, i uint32, params *btcnet.Params) (string, error) {
-	// Returns the "Author" who signed a message from the outpoint at index i.
-	relScript := authorTx.TxOut[i].PkScript
-	// This pubkeyscript defines the author of the post
+func GetAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
+	// Returns the "Author" who signed the first txin of the transaction
+	sigScript := tx.TxIn[0].SignatureScript
 
-	scriptClass, addrs, _, err := btcscript.ExtractPkScriptAddrs(relScript, params)
+	dummyTx := btcwire.NewMsgTx()
+
+	// Setup a script executer to parse the raw bytes of the signature script.
+	script, err := btcscript.NewScript(sigScript, make([]byte, 0), 0, dummyTx, 0)
 	if err != nil {
 		return "", err
 	}
-	if scriptClass != btcscript.PubKeyHashTy {
-		return "", fmt.Errorf("Author script is not p2pkh")
+	// Step twice due to <sig> <pubkey> format of pay 2pubkeyhash
+	script.Step()
+	script.Step()
+	pkBytes := script.GetStack()[1]
+
+	addrPubKey, err := btcutil.NewAddressPubKey(pkBytes, net)
+	if err != nil {
+		return "", err
 	}
-	// We know that the returned value is a P2PKH; therefore it must have
-	// one address which is the author of the attached bulletin
-	author := addrs[0].String()
 
-	return author, nil
-
+	return addrPubKey.EncodeAddress(), nil
 }
 
 func (bltn *Bulletin) Bytes() ([]byte, error) {
