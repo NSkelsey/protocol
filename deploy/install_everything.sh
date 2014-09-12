@@ -71,15 +71,19 @@ delete_everything() {
 
 }
 
-install() {
-    sudo apt-get -y update
+ahimsad_deps() {
     install_bitcoin
     install_golang
     go_conf
     install_ahimsad
+}
+
+install() {
+    sudo apt-get -y update
+    # ahimsad install
+    ahimsad_deps
     # ahimsa web
     ahimsa_web_deps
     get_ahimsa_web
 }
 
-install
