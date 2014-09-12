@@ -19,3 +19,6 @@ CREATE TABLE bulletins (
     FOREIGN KEY(block) REFERENCES blocks (hash)
 );
 
+
+CREATE INDEX IF NOT EXISTS idx_height ON blocks (height);
+CREATE INDEX IF NOT EXISTS idx_timestamp ON blocks (timestamp);
