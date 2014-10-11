@@ -3,7 +3,7 @@ CREATE TABLE blocks (
     prevhash    TEXT, 
     height      INT,        -- The number of blocks between this one and the genesis block.
     timestamp   INT,        -- The timestamp stored as an epoch time
-    -- Table constraints
+
     PRIMARY KEY(hash)
     FOREIGN KEY(prevhash) REFERENCES blocks(hash)
 );
@@ -11,14 +11,23 @@ CREATE TABLE blocks (
 CREATE TABLE bulletins (
     author  TEXT NOT NULL,  -- From the address of the first OutPoint used.
     txid    TEXT NOT NULL, 
-    topic   TEXT,           -- UTF-8
+    board   TEXT,           -- UTF-8
     message TEXT,           -- UTF-8
     block   TEXT, 
-    -- Table constraints
+
     PRIMARY KEY(txid), 
-    FOREIGN KEY(block) REFERENCES blocks (hash)
+    FOREIGN KEY(block) REFERENCES blocks(hash)
 );
 
+-- The point of the blacklist is to highlight the fact that editorial control is still possible,
+-- but now the choice is given explicity to some third party.
+create TABLE blacklist ( 
+    txid    TEXT,
+    reason  TEXT NOT NULL,
+
+    PRIMARY KEY(txid),
+    FORIEGN KEY(txid) REFERENCES bulletins(txid)
+);
 
 CREATE INDEX IF NOT EXISTS idx_height ON blocks (height);
 CREATE INDEX IF NOT EXISTS idx_timestamp ON blocks (timestamp);
