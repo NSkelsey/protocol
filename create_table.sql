@@ -1,3 +1,6 @@
+-- DB Schema -- Version 0.1.0
+
+
 CREATE TABLE blocks (
     hash        TEXT NOT NULL, 
     prevhash    TEXT, 
@@ -9,18 +12,19 @@ CREATE TABLE blocks (
 );
 
 CREATE TABLE bulletins (
-    author  TEXT NOT NULL,  -- From the address of the first OutPoint used.
-    txid    TEXT NOT NULL, 
-    board   TEXT,           -- UTF-8
-    message TEXT,           -- UTF-8
-    block   TEXT, 
+    author      TEXT NOT NULL,  -- From the address of the first OutPoint used.
+    txid        TEXT NOT NULL, 
+    board       TEXT,           -- UTF-8
+    message     TEXT,           -- UTF-8
+    reportedat   INT,           -- UTC Seconds
+    block       TEXT,
 
     PRIMARY KEY(txid), 
     FOREIGN KEY(block) REFERENCES blocks(hash)
 );
 
 -- The point of the blacklist is to highlight the fact that editorial control is still possible,
--- but now the choice is given explicity to some third party.
+-- but now the choice is given explicity to the third party.
 create TABLE blacklist ( 
     txid    TEXT,
     reason  TEXT NOT NULL,
