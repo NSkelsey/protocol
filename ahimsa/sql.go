@@ -12,7 +12,13 @@ func GetCreateSql() (string, error) {
 	// We figure out where that file is by using GOPATH
 
 	route := "src/github.com/NSkelsey/protocol/create_table.sql"
-	fpath := filepath.Join(os.Getenv("GOPATH"), route)
+
+	gopath := os.Getenv("GOPATH")
+	if len(gopath) < 1 {
+		return "", error.New("The EnvVar $GOPATH is not set!!")
+	}
+
+	fpath := filepath.Join(gopath, route)
 
 	file, err := os.Open(fpath)
 	if err != nil {
