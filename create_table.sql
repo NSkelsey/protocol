@@ -30,7 +30,7 @@ create TABLE blacklist (
     reason  TEXT NOT NULL,
 
     PRIMARY KEY(txid),
-    FORIEGN KEY(txid) REFERENCES bulletins(txid)
+    FOREIGN KEY(txid) REFERENCES bulletins(txid)
 );
 
 CREATE INDEX IF NOT EXISTS idx_height ON blocks (height);
