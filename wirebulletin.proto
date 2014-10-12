@@ -1,5 +1,5 @@
 // The protocol buffer format for serialized bulletins 
-// Version: 0.1.1
+// Version: 0.1.2 
 
 package ahimsa;
 
