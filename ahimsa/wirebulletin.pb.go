@@ -21,9 +21,9 @@ var _ = proto.Marshal
 var _ = math.Inf
 
 type WireBulletin struct {
-	Version          *uint32 `protobuf:"varint,1,req,name=version" json:"version,omitempty"`
-	Topic            *string `protobuf:"bytes,2,opt,name=topic" json:"topic,omitempty"`
-	Message          *string `protobuf:"bytes,3,opt,name=message" json:"message,omitempty"`
+	Board            *string `protobuf:"bytes,1,opt,name=board" json:"board,omitempty"`
+	Message          *string `protobuf:"bytes,2,req,name=message" json:"message,omitempty"`
+	Timestamp        *int64  `protobuf:"varint,3,opt,name=timestamp" json:"timestamp,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -31,16 +31,9 @@ func (m *WireBulletin) Reset()         { *m = WireBulletin{} }
 func (m *WireBulletin) String() string { return proto.CompactTextString(m) }
 func (*WireBulletin) ProtoMessage()    {}
 
-func (m *WireBulletin) GetVersion() uint32 {
-	if m != nil && m.Version != nil {
-		return *m.Version
-	}
-	return 0
-}
-
-func (m *WireBulletin) GetTopic() string {
-	if m != nil && m.Topic != nil {
-		return *m.Topic
+func (m *WireBulletin) GetBoard() string {
+	if m != nil && m.Board != nil {
+		return *m.Board
 	}
 	return ""
 }
@@ -50,6 +43,13 @@ func (m *WireBulletin) GetMessage() string {
 		return *m.Message
 	}
 	return ""
+}
+
+func (m *WireBulletin) GetTimestamp() int64 {
+	if m != nil && m.Timestamp != nil {
+		return *m.Timestamp
+	}
+	return 0
 }
 
 func init() {
