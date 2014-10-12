@@ -1,4 +1,4 @@
--- DB Schema -- Version 0.1.0
+-- DB Schema -- Version 0.1.1
 
 
 CREATE TABLE blocks (
@@ -16,7 +16,7 @@ CREATE TABLE bulletins (
     txid        TEXT NOT NULL, 
     board       TEXT,           -- UTF-8
     message     TEXT,           -- UTF-8
-    reportedat   INT,           -- UTC Seconds
+    timestamp   INT,            -- Seconds since Jan 1, 1970
     block       TEXT,
 
     PRIMARY KEY(txid), 
