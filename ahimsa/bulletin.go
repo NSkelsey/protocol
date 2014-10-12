@@ -77,10 +77,11 @@ func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
 	return alldata, nil
 }
 
+// Creates a new bulletin from the containing Tx, supplied author and optional blockhash
+// by unpacking txOuts that are considered data. It ignores extra junk behind the protobuffer.
+// NewBulletin also asserts aspects of valid bulletins by throwing errors when msg len
+// is zero or board len is greater than MaxBoardLen.
 func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*Bulletin, error) {
-	// Creates a new bulletin from the containing Tx, supplied author and optional blockhash
-
-	// unpack txOuts that are considered data, We are going to ignore extra junk at the end of data
 	wireBltn := &WireBulletin{}
 
 	// Bootleg solution, but if unmarshal fails slice txout and try again until we can try no more or it fails
@@ -105,21 +106,26 @@ func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*B
 		return nil, err
 	}
 
-	hash, _ := tx.TxSha()
-
 	board := wireBltn.GetBoard()
-
 	// assert that the length of the board is within its max size!
 	if len(board) > MaxBoardLen {
 		return nil, errors.New("Board length is too large.")
 	}
+
+	msg := wireBltn.GetMessage()
+	// assert that the bulletin has a non zero message length.
+	if len(msg) < 1 {
+		return nil, errors.New("Message has no content.")
+	}
+
+	hash, _ := tx.TxSha()
 
 	bltn := &Bulletin{
 		Txid:      &hash,
 		Block:     blkhash,
 		Author:    author,
 		Board:     board,
-		Message:   wireBltn.GetMessage(),
+		Message:   msg,
 		Timestamp: time.Unix(wireBltn.GetTimestamp(), 0),
 	}
 
