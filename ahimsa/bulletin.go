@@ -2,7 +2,9 @@ package ahimsa
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"time"
 
 	"code.google.com/p/goprotobuf/proto"
 	"github.com/conformal/btcnet"
@@ -11,9 +13,12 @@ import (
 	"github.com/conformal/btcwire"
 )
 
+const (
+	MaxBoardLen int = 30
+)
+
 var (
-	ProtocolVersion uint32 = 0x1
-	Magic                  = [8]byte{
+	Magic = [8]byte{
 		0x42, 0x52, 0x45, 0x54, 0x48, 0x52, 0x45, 0x4e, /* | BRETHREN | */
 	}
 )
@@ -21,11 +26,12 @@ var (
 type Author string
 
 type Bulletin struct {
-	Txid    *btcwire.ShaHash
-	Block   *btcwire.ShaHash
-	Author  string
-	Topic   string
-	Message string
+	Txid      *btcwire.ShaHash
+	Block     *btcwire.ShaHash
+	Author    string
+	Board     string
+	Message   string
+	Timestamp time.Time
 }
 
 func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
@@ -77,7 +83,7 @@ func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*B
 	// unpack txOuts that are considered data, We are going to ignore extra junk at the end of data
 	wireBltn := &WireBulletin{}
 
-	// Bootleg solution, but if unmarshal fails slice txout and try again until we can no more or it fails
+	// Bootleg solution, but if unmarshal fails slice txout and try again until we can try no more or it fails
 	var err error
 	for j := len(tx.TxOut); j > 1; j-- {
 		rel_txouts := tx.TxOut[:j] // slice off change txouts
@@ -100,20 +106,29 @@ func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*B
 	}
 
 	hash, _ := tx.TxSha()
+
+	board := wireBltn.GetBoard()
+
+	// assert that the length of the board is within its max size!
+	if len(board) > MaxBoardLen {
+		return nil, errors.New("Board length is too large.")
+	}
+
 	bltn := &Bulletin{
-		Txid:    &hash,
-		Block:   blkhash,
-		Author:  author,
-		Topic:   wireBltn.GetTopic(),
-		Message: wireBltn.GetMessage(),
+		Txid:      &hash,
+		Block:     blkhash,
+		Author:    author,
+		Board:     board,
+		Message:   wireBltn.GetMessage(),
+		Timestamp: time.Unix(wireBltn.GetTimestamp(), 0),
 	}
 
 	return bltn, nil
 }
 
-func NewBulletinFromStr(author string, topic string, msg string) (*Bulletin, error) {
-	if len(topic) > 30 {
-		return nil, fmt.Errorf("Topic too long! Length is: %d", len(topic))
+func NewBulletinFromStr(author string, board string, msg string) (*Bulletin, error) {
+	if len(board) > 30 {
+		return nil, fmt.Errorf("Board too long! Length is: %d", len(board))
 	}
 
 	if len(msg) > 500 {
@@ -121,9 +136,10 @@ func NewBulletinFromStr(author string, topic string, msg string) (*Bulletin, err
 	}
 
 	bulletin := Bulletin{
-		Author:  author,
-		Topic:   topic,
-		Message: msg,
+		Author:    author,
+		Board:     board,
+		Message:   msg,
+		Timestamp: time.Now(),
 	}
 	return &bulletin, nil
 }
@@ -184,6 +200,7 @@ func GetAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
 	// Step twice due to <sig> <pubkey> format of pay 2pubkeyhash
 	script.Step()
 	script.Step()
+	// Pull off the <pubkey>
 	pkBytes := script.GetStack()[1]
 
 	addrPubKey, err := btcutil.NewAddressPubKey(pkBytes, net)
@@ -201,9 +218,9 @@ func (bltn *Bulletin) Bytes() ([]byte, error) {
 	payload := make([]byte, 0)
 
 	wireb := &WireBulletin{
-		Version: proto.Uint32(ProtocolVersion),
-		Topic:   proto.String(bltn.Topic),
-		Message: proto.String(bltn.Message),
+		Board:     proto.String(bltn.Board),
+		Message:   proto.String(bltn.Message),
+		Timestamp: proto.Int64(bltn.Timestamp.Unix()),
 	}
 
 	pbytes, err := proto.Marshal(wireb)
