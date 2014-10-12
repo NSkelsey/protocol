@@ -2,7 +2,7 @@ Definitions of
 
 ###Storage Format
 The storage format is slightly complicated. We encode bulletins in the 20 byte slices
-used for bitcoin addresses in Pay2PubKeyHash transactions. The Tx indicates that it is
+used for bitcoin addresses in [Pay2PubKeyHash](https://bitcoin.org/en/developer-guide#term-p2pkh) transactions. The Tx indicates that it is
 a public bulletin by making the first 8 bytes of that first 20 byte slice equal to `0x
 425245544852454e`. The actual bulletin itself is then encoded in a protocol buffer for 
 effeciency!?
@@ -25,10 +25,10 @@ code. The big ones are:
 - [bitmessage](https://github.com/Bitmessage/PyBitmessage)
     - A similar messaging tool that encrypts messages preflight. 
 - [bitchirp](https://bitchirp.org/)
-    - The original distributed version of twitter
+    - The original distributed version of twitter.
 - [Proof of Existence](http://www.proofofexistence.com/)
     - The first tool we were aware of that uses the blockchain for its distrbuted 
     timestamp and data storage.
-- [Counter Party](https://www.counterparty.co/)
+- [CounterParty](https://www.counterparty.co/)
     - Our bitcoin daemon and database schema was modeled after the one created by
     PhantomPhreak.

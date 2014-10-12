@@ -21,6 +21,8 @@ var (
 	Magic = [8]byte{
 		0x42, 0x52, 0x45, 0x54, 0x48, 0x52, 0x45, 0x4e, /* | BRETHREN | */
 	}
+	ErrMaxBoardLen = errors.New("Board length is too long")
+	ErrNoMsg       = errors.New("Message has no content")
 )
 
 type Author string
@@ -109,13 +111,13 @@ func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*B
 	board := wireBltn.GetBoard()
 	// assert that the length of the board is within its max size!
 	if len(board) > MaxBoardLen {
-		return nil, errors.New("Board length is too large.")
+		return nil, ErrMaxBoardLen
 	}
 
 	msg := wireBltn.GetMessage()
 	// assert that the bulletin has a non zero message length.
 	if len(msg) < 1 {
-		return nil, errors.New("Message has no content.")
+		return nil, ErrNoMsg
 	}
 
 	hash, _ := tx.TxSha()
@@ -132,13 +134,14 @@ func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*B
 	return bltn, nil
 }
 
+// The interface by which
 func NewBulletinFromStr(author string, board string, msg string) (*Bulletin, error) {
-	if len(board) > 30 {
-		return nil, fmt.Errorf("Board too long! Length is: %d", len(board))
+	if len(board) > MaxBoardLen {
+		return nil, ErrMaxBoardLen
 	}
 
-	if len(msg) > 500 {
-		return nil, fmt.Errorf("Message too long! Length is: %d", len(msg))
+	if len(msg) < 1 {
+		return nil, ErrNoMsg
 	}
 
 	bulletin := Bulletin{
@@ -150,8 +153,8 @@ func NewBulletinFromStr(author string, board string, msg string) (*Bulletin, err
 	return &bulletin, nil
 }
 
+// Converts a bulletin into public key scripts for encoding
 func (bltn *Bulletin) TxOuts(toBurn int64, net *btcnet.Params) ([]*btcwire.TxOut, error) {
-	// Converts a bulletin into public key scripts for encoding
 
 	rawbytes, err := bltn.Bytes()
 	if err != nil {
@@ -192,8 +195,8 @@ func (bltn *Bulletin) TxOuts(toBurn int64, net *btcnet.Params) ([]*btcwire.TxOut
 	return txouts, nil
 }
 
+// Returns the "Author" who signed the first txin of the transaction
 func GetAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
-	// Returns the "Author" who signed the first txin of the transaction
 	sigScript := tx.TxIn[0].SignatureScript
 
 	dummyTx := btcwire.NewMsgTx()
@@ -217,10 +220,10 @@ func GetAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
 	return addrPubKey.EncodeAddress(), nil
 }
 
+// Takes a bulletin and converts into a byte array. A bulletin has two
+// components. The leading 8 magic bytes and then the serialized protocol
+// buffer that contains the real message 'payload'.
 func (bltn *Bulletin) Bytes() ([]byte, error) {
-	// Takes a bulletin and converts into a byte array. A bulletin has two
-	// components. The leading 8 magic bytes and then the serialized protocol
-	// buffer that contains the real message 'payload'.
 	payload := make([]byte, 0)
 
 	wireb := &WireBulletin{
@@ -239,8 +242,8 @@ func (bltn *Bulletin) Bytes() ([]byte, error) {
 	return payload, nil
 }
 
+// Returns the number of txouts needed for this bulletin
 func (bltn *Bulletin) NumOuts() (int, error) {
-	// Returns the number of txouts needed for this bulletin
 
 	rawbytes, err := bltn.Bytes()
 	if err != nil {
