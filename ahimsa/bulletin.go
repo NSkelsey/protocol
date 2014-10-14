@@ -83,14 +83,17 @@ func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
 // by unpacking txOuts that are considered data. It ignores extra junk behind the protobuffer.
 // NewBulletin also asserts aspects of valid bulletins by throwing errors when msg len
 // is zero or board len is greater than MaxBoardLen.
-func NewBulletin(tx *btcwire.MsgTx, author string, blkhash *btcwire.ShaHash) (*Bulletin, error) {
+func NewBulletin(tx *btcwire.MsgTx, blkhash *btcwire.ShaHash) (*Bulletin, error) {
 	wireBltn := &WireBulletin{}
 
+	author, err := getAuthor(tx)
+	if err != nil {
+		return nil, err
+	}
+
 	// Bootleg solution, but if unmarshal fails slice txout and try again until we can try no more or it fails
-	var err error
 	for j := len(tx.TxOut); j > 1; j-- {
 		rel_txouts := tx.TxOut[:j] // slice off change txouts
-		err = *new(error)
 		bytes, err := extractData(rel_txouts)
 		if err != nil {
 			continue
@@ -196,12 +199,12 @@ func (bltn *Bulletin) TxOuts(toBurn int64, net *btcnet.Params) ([]*btcwire.TxOut
 }
 
 // Returns the "Author" who signed the first txin of the transaction
-func GetAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
+func getAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
 	sigScript := tx.TxIn[0].SignatureScript
 
 	dummyTx := btcwire.NewMsgTx()
 
-	// Setup a script executer to parse the raw bytes of the signature script.
+	// Setup a script executor to parse the raw bytes of the signature script.
 	script, err := btcscript.NewScript(sigScript, make([]byte, 0), 0, dummyTx, 0)
 	if err != nil {
 		return "", err
