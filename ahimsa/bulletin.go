@@ -83,10 +83,10 @@ func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
 // by unpacking txOuts that are considered data. It ignores extra junk behind the protobuffer.
 // NewBulletin also asserts aspects of valid bulletins by throwing errors when msg len
 // is zero or board len is greater than MaxBoardLen.
-func NewBulletin(tx *btcwire.MsgTx, blkhash *btcwire.ShaHash) (*Bulletin, error) {
+func NewBulletin(tx *btcwire.MsgTx, blkhash *btcwire.ShaHash, net *btcnet.Params) (*Bulletin, error) {
 	wireBltn := &WireBulletin{}
 
-	author, err := getAuthor(tx)
+	author, err := getAuthor(tx, net)
 	if err != nil {
 		return nil, err
 	}
