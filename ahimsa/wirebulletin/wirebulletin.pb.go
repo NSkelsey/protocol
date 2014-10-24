@@ -3,7 +3,7 @@
 // DO NOT EDIT!
 
 /*
-Package ahimsa is a generated protocol buffer package.
+Package wirebulletin is a generated protocol buffer package.
 
 It is generated from these files:
 	wirebulletin.proto
@@ -11,7 +11,7 @@ It is generated from these files:
 It has these top-level messages:
 	WireBulletin
 */
-package ahimsa
+package wirebulletin
 
 import proto "code.google.com/p/goprotobuf/proto"
 import math "math"

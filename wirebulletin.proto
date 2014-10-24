@@ -1,7 +1,7 @@
 // The protocol buffer format for serialized bulletins 
 // Version: 0.1.2 
 
-package ahimsa;
+// The package output for go is wirebulletin
 
 option java_outer_classname = "WireBulletinProtos";
 

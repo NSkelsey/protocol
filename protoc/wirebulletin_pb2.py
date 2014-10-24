@@ -12,35 +12,35 @@ from google.protobuf import descriptor_pb2
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='wirebulletin.proto',
-  package='ahimsa',
-  serialized_pb='\n\x12wirebulletin.proto\x12\x06\x61himsa\"A\n\x0cWireBulletin\x12\r\n\x05\x62oard\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x02(\t\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x42\x14\x42\x12WireBulletinProtos')
+  package='',
+  serialized_pb='\n\x12wirebulletin.proto\"A\n\x0cWireBulletin\x12\r\n\x05\x62oard\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x02(\t\x12\x11\n\ttimestamp\x18\x03 \x01(\x03\x42\x14\x42\x12WireBulletinProtos')
 
 
 
 
 _WIREBULLETIN = _descriptor.Descriptor(
   name='WireBulletin',
-  full_name='ahimsa.WireBulletin',
+  full_name='WireBulletin',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='board', full_name='ahimsa.WireBulletin.board', index=0,
+      name='board', full_name='WireBulletin.board', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='message', full_name='ahimsa.WireBulletin.message', index=1,
+      name='message', full_name='WireBulletin.message', index=1,
       number=2, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='ahimsa.WireBulletin.timestamp', index=2,
+      name='timestamp', full_name='WireBulletin.timestamp', index=2,
       number=3, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -55,8 +55,8 @@ _WIREBULLETIN = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=30,
-  serialized_end=95,
+  serialized_start=22,
+  serialized_end=87,
 )
 
 DESCRIPTOR.message_types_by_name['WireBulletin'] = _WIREBULLETIN
@@ -65,7 +65,7 @@ class WireBulletin(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _WIREBULLETIN
 
-  # @@protoc_insertion_point(class_scope:ahimsa.WireBulletin)
+  # @@protoc_insertion_point(class_scope:WireBulletin)
 
 
 DESCRIPTOR.has_options = True

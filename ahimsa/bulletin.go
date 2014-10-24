@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"code.google.com/p/goprotobuf/proto"
+	"github.com/NSkelsey/protocol/ahimsa/wirebulletin"
 	"github.com/conformal/btcnet"
 	"github.com/conformal/btcscript"
 	"github.com/conformal/btcutil"
@@ -36,9 +37,9 @@ type Bulletin struct {
 	Timestamp time.Time
 }
 
+// Munges the pushed data of TxOuts into a single universal slice that we can
+// use as a whole message.
 func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
-	// Munges the pushed data of TxOuts into a single universal slice that we can
-	// use as whole message.
 
 	alldata := make([]byte, 0)
 
@@ -84,12 +85,14 @@ func extractData(txOuts []*btcwire.TxOut) ([]byte, error) {
 // NewBulletin also asserts aspects of valid bulletins by throwing errors when msg len
 // is zero or board len is greater than MaxBoardLen.
 func NewBulletin(tx *btcwire.MsgTx, blkhash *btcwire.ShaHash, net *btcnet.Params) (*Bulletin, error) {
-	wireBltn := &WireBulletin{}
+	wireBltn := &wirebulletin.WireBulletin{}
 
 	author, err := getAuthor(tx, net)
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO. scrutinize.
 
 	// Bootleg solution, but if unmarshal fails slice txout and try again until we can try no more or it fails
 	for j := len(tx.TxOut); j > 1; j-- {
@@ -229,7 +232,7 @@ func getAuthor(tx *btcwire.MsgTx, net *btcnet.Params) (string, error) {
 func (bltn *Bulletin) Bytes() ([]byte, error) {
 	payload := make([]byte, 0)
 
-	wireb := &WireBulletin{
+	wireb := &wirebulletin.WireBulletin{
 		Board:     proto.String(bltn.Board),
 		Message:   proto.String(bltn.Message),
 		Timestamp: proto.Int64(bltn.Timestamp.Unix()),
