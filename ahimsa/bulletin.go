@@ -19,6 +19,10 @@ const (
 )
 
 var (
+	// Semantic versioning. This must be updated with changes to wirebulletin.proto
+	Version = "0.1.2"
+
+	// The delimiter that sits at the front of every bulletin.
 	Magic = [8]byte{
 		0x42, 0x52, 0x45, 0x54, 0x48, 0x52, 0x45, 0x4e, /* | BRETHREN | */
 	}
