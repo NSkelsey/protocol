@@ -130,6 +130,7 @@ func NewBulletin(tx *btcwire.MsgTx, blkhash *btcwire.ShaHash, net *btcnet.Params
 		return nil, ErrNoMsg
 	}
 
+	// TODO assert that msg and board are valid UTF-8 strings.
 	hash, _ := tx.TxSha()
 
 	bltn := &Bulletin{
@@ -154,6 +155,8 @@ func NewBulletinFromStr(author string, board string, msg string) (*Bulletin, err
 		return nil, ErrNoMsg
 	}
 
+	// TODO assert that msg and board are valid UTF-8 strings.
+	
 	bulletin := Bulletin{
 		Author:    author,
 		Board:     board,
